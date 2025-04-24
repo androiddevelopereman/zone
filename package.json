@@ -1,0 +1,43 @@
+{
+  "name": "pits-training-frontend-2025",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/vue3": "^6.1.15",
+    "@popperjs/core": "^2.11.8",
+    "apexcharts": "^4.5.0",
+    "axios": "^1.7.9",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "bootstrap-vue": "^2.23.1",
+    "chart.js": "^4.4.8",
+    "core-js": "^3.8.3",
+    "fusioncharts": "^4.1.2",
+    "ol": "^10.4.0",
+    "pinia": "^2.3.0",
+    "v-calendar": "^3.1.2",
+    "vue": "^3.5.13",
+    "vue-functional-calendar": "^3.0.0",
+    "vue-fusioncharts": "^3.3.0",
+    "vue-i18n": "^10.0.5",
+    "vue-multiselect": "^3.1.0",
+    "vue-router": "^4.0.13",
+    "vue-speedometer": "^3.0.1",
+    "vue3-apexcharts": "^1.8.0",
+    "vuex": "^4.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "sass-embedded": "^1.85.1",
+    "vite": "^6.0.5"
+  }
+}
