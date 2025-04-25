@@ -10,13 +10,10 @@ import en from "./locales/en.json";
 import ar from "./locales/ar.json";
 import router from "./router";
 import VueApexCharts from "vue3-apexcharts";
-import VCalendar from 'v-calendar';
+import VCalendar from "v-calendar";
 
 // import * as bootstrap from 'bootstrap';
 // window.bootstrap = bootstrap;
-
-
-
 
 const i18n = createI18n({
   locale: "en",
@@ -30,7 +27,7 @@ const i18n = createI18n({
 const app = createApp(App);
 app.use(VueApexCharts);
 app.use(VCalendar, {
-  componentPrefix: 'Vc', // إضافة بادئة اختيارية للمكونات
+  componentPrefix: "Vc", // إضافة بادئة اختيارية للمكونات
 });
 app.use(i18n);
 app.use(router);

@@ -13,7 +13,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 a {
   font-weight: 500;
   color: #646cff;
@@ -36,19 +35,17 @@ body {
   text-align: right;
 }
 
-
 .rtl .modal-header {
   display: flex;
-  justify-content: space-between!important;
+  justify-content: space-between !important;
 }
 
 .rtl .modal-header .modal-title {
   margin-left: auto;
 }
-.rtl .modal-header button{
+.rtl .modal-header button {
   margin-right: auto;
 }
-
 
 h1 {
   font-size: 3.2em;
@@ -96,7 +93,8 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
-  }}
-  .rtl .sidebar .nav{
-    padding-right: 0;
   }
+}
+.rtl .sidebar .nav {
+  padding-right: 0;
+}

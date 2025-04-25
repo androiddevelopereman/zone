@@ -1968,4 +1968,4 @@ const data = [
     vehicle_name: "مرسيدس اتيكو 13491L",
   },
 ];
-export default data
+export default data;

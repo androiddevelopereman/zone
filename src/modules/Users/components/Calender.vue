@@ -1,71 +1,71 @@
 <script setup>
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import { ref, watch } from 'vue'
+import FullCalendar from "@fullcalendar/vue3";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import { ref, watch } from "vue";
 
 // Form refs
-const eventName = ref('')
-const selectedDates = ref([]) // Will still store the calculated dates
-const selectedWeekday = ref('') // 0-6 for Sunday-Saturday
-const extendedMonths = ref(1) // Default to 1 month
-const responsibleUser = ref('')
-const selectedUsers = ref([])
-const selectedArea = ref('')
+const eventName = ref("");
+const selectedDates = ref([]); // Will still store the calculated dates
+const selectedWeekday = ref(""); // 0-6 for Sunday-Saturday
+const extendedMonths = ref(1); // Default to 1 month
+const responsibleUser = ref("");
+const selectedUsers = ref([]);
+const selectedArea = ref("");
 
 // Sample data for dropdowns
 const users = [
-  { id: 1, name: 'John Doe' },
-  { id: 2, name: 'Jane Smith' },
-  { id: 3, name: 'Alex Johnson' },
-  { id: 4, name: 'Sara Williams' },
-]
+  { id: 1, name: "John Doe" },
+  { id: 2, name: "Jane Smith" },
+  { id: 3, name: "Alex Johnson" },
+  { id: 4, name: "Sara Williams" },
+];
 
 const areas = [
-  { id: 1, name: 'Marketing' },
-  { id: 2, name: 'Development' },
-  { id: 3, name: 'HR' },
-  { id: 4, name: 'Finance' },
-]
+  { id: 1, name: "Marketing" },
+  { id: 2, name: "Development" },
+  { id: 3, name: "HR" },
+  { id: 4, name: "Finance" },
+];
 
 // Weekdays for the dropdown
 const weekdays = [
-  { value: 0, name: 'Sunday' },
-  { value: 1, name: 'Monday' },
-  { value: 2, name: 'Tuesday' },
-  { value: 3, name: 'Wednesday' },
-  { value: 4, name: 'Thursday' },
-  { value: 5, name: 'Friday' },
-  { value: 6, name: 'Saturday' },
-]
+  { value: 0, name: "Sunday" },
+  { value: 1, name: "Monday" },
+  { value: 2, name: "Tuesday" },
+  { value: 3, name: "Wednesday" },
+  { value: 4, name: "Thursday" },
+  { value: 5, name: "Friday" },
+  { value: 6, name: "Saturday" },
+];
 
 // Calculate dates based on selected weekday and number of months
 const calculateDates = () => {
-  if (selectedWeekday.value === '') return
+  if (selectedWeekday.value === "") return;
 
-  const today = new Date()
-  const dayOfWeek = parseInt(selectedWeekday.value)
-  const months = parseInt(extendedMonths.value)
+  const today = new Date();
+  const dayOfWeek = parseInt(selectedWeekday.value);
+  const months = parseInt(extendedMonths.value);
 
-  const dates = []
-  const endDate = new Date(today)
-  endDate.setMonth(today.getMonth() + months)
+  const dates = [];
+  const endDate = new Date(today);
+  endDate.setMonth(today.getMonth() + months);
 
-  const currentDate = new Date(today)
+  const currentDate = new Date(today);
 
-  const diff = (dayOfWeek - currentDate.getDay() + 7) % 7
-  currentDate.setDate(currentDate.getDate() + diff)
+  const diff = (dayOfWeek - currentDate.getDay() + 7) % 7;
+  currentDate.setDate(currentDate.getDate() + diff);
 
   while (currentDate <= endDate) {
-    dates.push(new Date(currentDate))
-    currentDate.setDate(currentDate.getDate() + 7)
+    dates.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 7);
   }
 
-  selectedDates.value = dates
-}
+  selectedDates.value = dates;
+};
 
 // Watch for changes in weekday or months to recalculate dates
-watch([selectedWeekday, extendedMonths], calculateDates)
+watch([selectedWeekday, extendedMonths], calculateDates);
 
 // Form submission handler
 const handleSubmit = () => {
@@ -77,68 +77,68 @@ const handleSubmit = () => {
     responsibleUser: responsibleUser.value,
     users: selectedUsers.value,
     area: selectedArea.value,
-  })
+  });
 
   var events = selectedDates.value.map((d) => ({
     title: eventName.value,
     start: d,
-    backgroundColor: '#9f9900',
-  }))
-  calendarOptions.value.events = [...calendarOptions.value.events, ...events]
+    backgroundColor: "#9f9900",
+  }));
+  calendarOptions.value.events = [...calendarOptions.value.events, ...events];
 
   // Clear form after submission
-  eventName.value = ''
-  selectedWeekday.value = ''
-  extendedMonths.value = 1
-  selectedDates.value = []
-  responsibleUser.value = ''
-  selectedUsers.value = []
-  selectedArea.value = ''
-}
+  eventName.value = "";
+  selectedWeekday.value = "";
+  extendedMonths.value = 1;
+  selectedDates.value = [];
+  responsibleUser.value = "";
+  selectedUsers.value = [];
+  selectedArea.value = "";
+};
 
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin],
-  initialView: 'dayGridMonth',
+  initialView: "dayGridMonth",
   weekends: true,
   events: [
-    { title: 'Meeting', start: new Date() },
+    { title: "Meeting", start: new Date() },
     {
-      title: 'Lunch',
+      title: "Lunch",
       start: new Date(new Date().setDate(new Date().getDate() + 1)),
-      backgroundColor: '#378006',
+      backgroundColor: "#378006",
     },
     {
-      title: 'Conference',
+      title: "Conference",
       start: new Date(new Date().setDate(new Date().getDate() - 2)),
       end: new Date(new Date().setDate(new Date().getDate())),
-      backgroundColor: '#3788d8',
+      backgroundColor: "#3788d8",
     },
     {
-      title: 'Interview',
+      title: "Interview",
       start: new Date(new Date().setDate(new Date().getDate() + 5)),
-      backgroundColor: '#9c27b0',
+      backgroundColor: "#9c27b0",
     },
     {
-      title: 'Workshop',
+      title: "Workshop",
       start: new Date(new Date().setDate(new Date().getDate() + 10)),
-      backgroundColor: '#f44336',
+      backgroundColor: "#f44336",
     },
     {
-      title: 'Deadline',
+      title: "Deadline",
       start: new Date(new Date().setDate(new Date().getDate() + 15)),
-      backgroundColor: '#ff9800',
+      backgroundColor: "#ff9800",
     },
   ],
   editable: true,
   selectable: true,
   datesSet: (dateInfo) => {
-    console.log('datesSet event triggered:', dateInfo)
+    console.log("datesSet event triggered:", dateInfo);
   },
   dateClick: (info) => {
-    console.log('Date clicked:', info)
-    console.log(calendarOptions.value.events)
+    console.log("Date clicked:", info);
+    console.log(calendarOptions.value.events);
   },
-})
+});
 </script>
 
 <template>
@@ -162,7 +162,12 @@ const calendarOptions = ref({
         <!-- Weekday Select Field -->
         <div class="form-group">
           <label for="selectedWeekday">Week Day</label>
-          <select id="selectedWeekday" v-model="selectedWeekday" class="form-control" required>
+          <select
+            id="selectedWeekday"
+            v-model="selectedWeekday"
+            class="form-control"
+            required
+          >
             <option value="">Select a weekday</option>
             <option v-for="day in weekdays" :key="day.value" :value="day.value">
               {{ day.name }}
@@ -188,7 +193,11 @@ const calendarOptions = ref({
         <div class="form-group" v-if="selectedDates.length > 0">
           <label>Calculated Dates</label>
           <div class="dates-preview">
-            <div v-for="(date, index) in selectedDates" :key="index" class="date-item">
+            <div
+              v-for="(date, index) in selectedDates"
+              :key="index"
+              class="date-item"
+            >
               {{ date.toLocaleDateString() }}
             </div>
           </div>
@@ -197,7 +206,12 @@ const calendarOptions = ref({
         <!-- Responsible User Field (Select) -->
         <div class="form-group">
           <label for="responsibleUser">Responsible User</label>
-          <select id="responsibleUser" v-model="responsibleUser" class="form-control" required>
+          <select
+            id="responsibleUser"
+            v-model="responsibleUser"
+            class="form-control"
+            required
+          >
             <option value="">Select a user</option>
             <option v-for="user in users" :key="user.id" :value="user.id">
               {{ user.name }}
@@ -208,7 +222,12 @@ const calendarOptions = ref({
         <!-- Users Field (MultiSelect) -->
         <div class="form-group">
           <label for="selectedUsers">Users</label>
-          <select id="selectedUsers" v-model="selectedUsers" class="form-control" multiple>
+          <select
+            id="selectedUsers"
+            v-model="selectedUsers"
+            class="form-control"
+            multiple
+          >
             <option v-for="user in users" :key="user.id" :value="user.id">
               {{ user.name }}
             </option>
@@ -219,7 +238,12 @@ const calendarOptions = ref({
         <!-- Area Field (Select) -->
         <div class="form-group">
           <label for="selectedArea">Area</label>
-          <select id="selectedArea" v-model="selectedArea" class="form-control" required>
+          <select
+            id="selectedArea"
+            v-model="selectedArea"
+            class="form-control"
+            required
+          >
             <option value="">Select an area</option>
             <option v-for="area in areas" :key="area.id" :value="area.id">
               {{ area.name }}

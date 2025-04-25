@@ -3,7 +3,12 @@
     <div class="filter-left">
       <div class="search-container">
         <img src="../../../assets/search.svg" alt="Search Icon" />
-        <input type="text" class="search-input" v-model="searchQuery" :placeholder="$t('Search')" />
+        <input
+          type="text"
+          class="search-input"
+          v-model="searchQuery"
+          :placeholder="$t('Search')"
+        />
       </div>
       <select v-model="selectedFilter" class="filter-dropdown search-container">
         <option disabled value="">All</option>
@@ -28,10 +33,19 @@
       <div><i class="fa-duotone fa-solid fa-arrow-rotate-right"></i></div>
     </div>
     <div class="columns-button">
-      <button class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#driverModal" @click="openAddModal">
+      <button
+        class="btn btn-primary my-3"
+        data-bs-toggle="modal"
+        data-bs-target="#driverModal"
+        @click="openAddModal"
+      >
         {{ $t("Add Driver") }}
       </button>
-      <DriverModal :mode="modalMode" :user="selectedUser" @submit="handleUserSubmit" />
+      <DriverModal
+        :mode="modalMode"
+        :user="selectedUser"
+        @submit="handleUserSubmit"
+      />
     </div>
   </div>
   <table class="table">
@@ -54,26 +68,54 @@
         <td>{{ driver.dallas || "-" }}</td>
         <td>
           <div class="dropdown">
-            <button class="btn btn-link" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+            <button
+              class="btn btn-link"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-three-dots-vertical"
+                viewBox="0 0 16 16"
+              >
                 <path
-                  d="M3 9.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0-5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0 10a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z" />
+                  d="M3 9.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0-5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0 10a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z"
+                />
               </svg>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <li>
-                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#driverModal"
-                  @click.prevent="openEditModal(driver)">{{ $t("Edit") }}</a>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#driverModal"
+                  @click.prevent="openEditModal(driver)"
+                  >{{ $t("Edit") }}</a
+                >
               </li>
               <li>
-                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#detailsModel"
-                  @click.prevent="viewDetails(driver)">{{ $t("Details") }}</a>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#detailsModel"
+                  @click.prevent="viewDetails(driver)"
+                  >{{ $t("Details") }}</a
+                >
               </li>
               <li>
-                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                  @click="openDeleteModal(driver)">
+                <a
+                  class="dropdown-item"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteModal"
+                  @click="openDeleteModal(driver)"
+                >
                   {{ $t("Delete") }}
                 </a>
               </li>
@@ -82,15 +124,26 @@
         </td>
       </tr>
     </tbody>
-    <div class="modal fade" id="detailsModel" tabindex="-1" aria-labelledby="detailsModelLabel" aria-hidden="true"
-      data-bs-backdrop="false">
+    <div
+      class="modal fade"
+      id="detailsModel"
+      tabindex="-1"
+      aria-labelledby="detailsModelLabel"
+      aria-hidden="true"
+      data-bs-backdrop="false"
+    >
       <div class="modal-dialog">
         <div class="modal-content" v-if="selectedUser">
           <div class="modal-header">
             <h5 class="modal-title" style="color: gray" id="exampleModalLabel">
               {{ $t(" User details") }}
             </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
           <div class="d-flex justify-content-between mt-3 mb-4 px-4" style="">
             <h2>{{ selectedUser?.name }}</h2>
@@ -126,7 +179,6 @@
                 <span> {{ $t(" Position") }} </span>
                 <p>{{ driverDetails?.position }}</p>
               </div>
-
             </div>
             <hr />
             <div class="one">
@@ -150,10 +202,13 @@
                 <p>{{ driverDetails?.licenseType }}</p>
               </div>
             </div>
-
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary footer-details" data-bs-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-secondary footer-details"
+              data-bs-dismiss="modal"
+            >
               {{ $t(" Close") }}
             </button>
           </div>
@@ -227,7 +282,6 @@ const viewDetails = async (driver) => {
   // const modal = new bootstrap.Modal(document.getElementById("detailsModel"));
   // modal.show();
   await fetchDriver();
-
 };
 async function fetchDriver() {
   try {
@@ -235,19 +289,20 @@ async function fetchDriver() {
     const token = authData.authorization.token;
     const selectedAccount = authData.user.accounts[0]?.id;
     const selectedLanguage = authData.user.accounts[0]?.language || "english";
-    const response = await axios.get("http://192.168.100.22:8091/api/drivers/" + selectedUser.value.id, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Selected-Account": selectedAccount,
-        "Selected-Language": selectedLanguage,
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    });
-
+    const response = await axios.get(
+      "http://192.168.100.22:8091/api/drivers/" + selectedUser.value.id,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Selected-Account": selectedAccount,
+          "Selected-Language": selectedLanguage,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
 
     driverDetails.value = response.data.result;
-
   } catch (error) {
     console.error("حدث خطأ أثناء جلب بيانات السائقين:", error);
     return [];
@@ -449,8 +504,8 @@ onMounted(async () => {
   margin-right: 5px;
 }
 
-.search-input:focus+.search-placeholder,
-.search-input:hover+.search-placeholder {
+.search-input:focus + .search-placeholder,
+.search-input:hover + .search-placeholder {
   opacity: 0;
 }
 

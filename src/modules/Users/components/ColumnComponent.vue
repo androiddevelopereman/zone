@@ -1,66 +1,71 @@
 <script setup>
-import { ref } from 'vue'
-import testData from '..//..//../..//data (1)'
+import { ref } from "vue";
+import testData from "..//..//../..//data (1)";
 // limit testData to 10 items
-const limitedTestData = ref(testData.slice(0, 12))
+const limitedTestData = ref(testData.slice(0, 12));
 
 const chartOptions = ref({
-    chart: {
-        type: 'bar',
+  chart: {
+    type: "bar",
+  },
+  plotOptions: {
+    bar: {
+      borderRadius: 4,
+      borderRadiusApplication: "end",
+      horizontal: false,
     },
-    plotOptions: {
-        bar: {
-            borderRadius: 4,
-            borderRadiusApplication: 'end',
-            horizontal: false,
-        },
-    },
+  },
+  title: {
+    text: "Speed Monitor",
+    align: "left",
+  },
+  yaxis: {
     title: {
-        text: 'Speed Monitor',
-        align: 'left',
+      text: "Speed",
     },
-    yaxis: {
-        title: {
-
-            text: 'Speed',
-        },
+  },
+  xaxis: {
+    title: {
+      text: "Time",
     },
-    xaxis: {
-        title: {
-            text: 'Time',
-        },
-    },
-    tooltip: {
-        shared: false,
-        y: {
-            formatter: function (val, cal) {
-                const item = testData[cal.dataPointIndex]
-                return `Speed: ${item.speed}
+  },
+  tooltip: {
+    shared: false,
+    y: {
+      formatter: function (val, cal) {
+        const item = testData[cal.dataPointIndex];
+        return `Speed: ${item.speed}
                <br/>
                Id: ${item.vehicle_id}
                 <br/>
                 Name :${item.vehicle_name}
                  <br/>
                  Time: ${item.last_gps_device}
-               `
-            },
-        },
+               `;
+      },
     },
-})
+  },
+});
 // const de= ref
 const series = ref([
-    {
-        name: 'Cool',
-        data: limitedTestData.value.map((item) => ({
-            x: item.last_gps_device,
-            y: item.speed,
-        })),
-    },
-])
+  {
+    name: "Cool",
+    data: limitedTestData.value.map((item) => ({
+      x: item.last_gps_device,
+      y: item.speed,
+    })),
+  },
+]);
 </script>
 
 <template>
-    <main>
-        <apexchart width="100%" height="600" type="bar" :options="chartOptions" :series="series"></apexchart>
-    </main>
+  <main>
+    <apexchart
+      width="100%"
+      height="600"
+      type="bar"
+      :options="chartOptions"
+      :series="series"
+    ></apexchart>
+  </main>
 </template>

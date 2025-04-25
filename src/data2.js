@@ -1985,4 +1985,9 @@ const data_for_speedometer = {
   last_speed: 134,
   driver_name: "ayah-driver",
 };
-export default { data, dataForDonutChart, data_pie_chart, data_for_speedometer };
+export default {
+  data,
+  dataForDonutChart,
+  data_pie_chart,
+  data_for_speedometer,
+};

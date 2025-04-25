@@ -11,8 +11,12 @@
       </button>
     </div>
     <div class="add">
-      <button type="button" class="btn btn-primary mb-3 btn-add" data-bs-target="#exampleModal"
-        @click="openModalForAdd">
+      <button
+        type="button"
+        class="btn btn-primary mb-3 btn-add"
+        data-bs-target="#exampleModal"
+        @click="openModalForAdd"
+      >
         <img src="../../../assets/plus.svg" class="icon-plus" />
         <span>{{ $t("Add User") }}</span>
       </button>
@@ -56,26 +60,56 @@
 
         <td>
           <div class="dropdown">
-            <button class="btn btn-link" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+            <button
+              class="btn btn-link"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-three-dots-vertical"
+                viewBox="0 0 16 16"
+              >
                 <path
-                  d="M3 9.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0-5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0 10a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z" />
+                  d="M3 9.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0-5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0 10a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z"
+                />
               </svg>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <li>
-                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                  @click.prevent="openModalForEdit(user)">Edit</a>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                  @click.prevent="openModalForEdit(user)"
+                  >Edit</a
+                >
               </li>
               <li>
-                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#detailsModel"
-                  @click.prevent="viewDetails(user)">Details</a>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#detailsModel"
+                  @click.prevent="viewDetails(user)"
+                  >Details</a
+                >
               </li>
               <li>
-                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                  @click.prevent="confirmDeleteUser(user.id)">Delete</a>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteModal"
+                  @click.prevent="confirmDeleteUser(user.id)"
+                  >Delete</a
+                >
               </li>
             </ul>
           </div>
@@ -86,17 +120,32 @@
   <nav aria-label="Page navigation example container ">
     <ul class="pagination">
       <li class="page-item" :class="{ disabled: currentPage === 1 }">
-        <a class="page-link" href="#" aria-label="Previous" @click.prevent="changePage(currentPage - 1)">
+        <a
+          class="page-link"
+          href="#"
+          aria-label="Previous"
+          @click.prevent="changePage(currentPage - 1)"
+        >
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
-      <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: currentPage === page }">
+      <li
+        class="page-item"
+        v-for="page in totalPages"
+        :key="page"
+        :class="{ active: currentPage === page }"
+      >
         <a class="page-link" href="#" @click.prevent="changePage(page)">{{
           page
         }}</a>
       </li>
       <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-        <a class="page-link" href="#" aria-label="Next" @click.prevent="changePage(currentPage + 1)">
+        <a
+          class="page-link"
+          href="#"
+          aria-label="Next"
+          @click.prevent="changePage(currentPage + 1)"
+        >
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>
@@ -104,36 +153,73 @@
   </nav>
 
   <div>
-    <UserModal ref="userModalRef" @submitForm="addUser" @update:isEditMode="isEditMode = $event"
-      @update:user="user = $event" :isEditMode="isEditMode" :user="user" />
+    <UserModal
+      ref="userModalRef"
+      @submitForm="addUser"
+      @update:isEditMode="isEditMode = $event"
+      @update:user="user = $event"
+      :isEditMode="isEditMode"
+      :user="user"
+    />
   </div>
-  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    aria-labelledby="deleteModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body">Are you sure you want to delete this user?</div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
             Close
           </button>
-          <button type="button" class="btn btn-danger" @click="deleteUser" data-bs-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-danger"
+            @click="deleteUser"
+            data-bs-dismiss="modal"
+          >
             Confirm
           </button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal fade" id="detailsModel" tabindex="-1" aria-labelledby="detailsModelLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="detailsModel"
+    tabindex="-1"
+    aria-labelledby="detailsModelLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content" v-if="selectedUser">
         <div class="modal-header">
           <h5 class="modal-title" style="color: gray" id="exampleModalLabel">
             {{ $t(" User details") }}
           </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="d-flex justify-content-between mt-3 mb-4 px-4" style="">
           <h2>{{ selectedUser?.name }}</h2>
@@ -185,7 +271,11 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary footer-details" data-bs-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-secondary footer-details"
+            data-bs-dismiss="modal"
+          >
             {{ $t(" Close") }}
           </button>
         </div>
@@ -268,8 +358,8 @@
   margin-right: 5px;
 }
 
-.search-input:focus+.search-placeholder,
-.search-input:hover+.search-placeholder {
+.search-input:focus + .search-placeholder,
+.search-input:hover + .search-placeholder {
   opacity: 0;
 }
 
