@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { Map, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
@@ -7,24 +7,65 @@ import "ol/ol.css";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Draw } from "ol/interaction";
-import { Polygon } from "ol/geom";
+import { Polygon, LineString, Point, Circle } from "ol/geom";
 import axios from "axios";
 import { transform } from "ol/proj";
 
 const map = ref(null);
 const vectorSource = new VectorSource();
-const drawnPolygon = ref(null);
+const drawnGeometry = ref(null);
 const drawInteraction = ref(null);
 const zoneName = ref("");
 const zoneDescription = ref("");
 const isSaving = ref(false);
 const saveError = ref(null);
 const saveSuccess = ref(false);
+const geometryType = ref("polygon");
 
+//TODO: Eman
 const config = {
   domain: "https://1e873a6d-c5d6-4e2f-bdef-d15843dea8ac.mock.pstmn.io",
   selectedAccount: "your-account-id",
   token: "your-auth-token",
+};
+
+const updateDrawInteraction = () => {
+  if (drawInteraction.value) {
+    map.value.removeInteraction(drawInteraction.value);
+  }
+  
+  let type = "Polygon";
+  switch (geometryType.value) {
+    case "linestring":
+      type = "LineString";
+      break;
+    case "point":
+      type = "Point";
+      break;
+    case "circle":
+      type = "Circle";
+      break;
+    default:
+      type = "Polygon";
+  }
+  
+  drawInteraction.value = new Draw({
+    source: vectorSource,
+    type: type,
+  });
+  
+  map.value.addInteraction(drawInteraction.value);
+  
+  drawInteraction.value.on("drawstart", () => {
+    vectorSource.clear();
+    drawnGeometry.value = null;
+    saveSuccess.value = false;
+    saveError.value = null;
+  });
+  
+  drawInteraction.value.on("drawend", (event) => {
+    drawnGeometry.value = event.feature.getGeometry();
+  });
 };
 
 const initializeMap = () => {
@@ -46,28 +87,20 @@ const initializeMap = () => {
     }),
   });
 
-  drawInteraction.value = new Draw({
-    source: vectorSource,
-    type: "Polygon",
-  });
-
-  map.value.addInteraction(drawInteraction.value);
-
-  drawInteraction.value.on("drawstart", () => {
-    vectorSource.clear();
-    drawnPolygon.value = null;
-    saveSuccess.value = false;
-    saveError.value = null;
-  });
-
-  drawInteraction.value.on("drawend", (event) => {
-    drawnPolygon.value = event.feature.getGeometry();
-  });
+  updateDrawInteraction();
 };
 
+watch(geometryType, () => {
+  if (map.value) {
+    vectorSource.clear();
+    drawnGeometry.value = null;
+    updateDrawInteraction();
+  }
+});
+
 const saveZone = async () => {
-  if (!drawnPolygon.value) {
-    saveError.value = "Please draw a polygon on the map first.";
+  if (!drawnGeometry.value) {
+    saveError.value = "Please draw on the map first.";
     return;
   }
   if (!zoneName.value) {
@@ -80,19 +113,38 @@ const saveZone = async () => {
   saveSuccess.value = false;
 
   try {
-    const mapCoordinates = drawnPolygon.value.getCoordinates();
-
-    const apiCoordinates = mapCoordinates.map((ring) =>
-      ring.map((coord) => transform(coord, "EPSG:3857", "EPSG:4326"))
-    );
+    let coordinates;
+    let radius;
+    
+    switch(geometryType.value) {
+      case "polygon":
+        coordinates = drawnGeometry.value.getCoordinates().map(ring =>
+          ring.map(coord => transform(coord, "EPSG:3857", "EPSG:4326"))
+        );
+        break;
+      case "linestring":
+        coordinates = drawnGeometry.value.getCoordinates().map(coord => 
+          transform(coord, "EPSG:3857", "EPSG:4326")
+        );
+        break;
+      case "point":
+        coordinates = transform(drawnGeometry.value.getCoordinates(), "EPSG:3857", "EPSG:4326");
+        break;
+      case "circle":
+        const center = drawnGeometry.value.getCenter();
+        coordinates = transform(center, "EPSG:3857", "EPSG:4326");
+        // Get radius in meters
+        radius = drawnGeometry.value.getRadius();
+        break;
+    }
 
     const payload = {
       name: zoneName.value,
       description: zoneDescription.value || "Default description",
-      type: "polygon",
+      type: geometryType.value,
       zones_type: "",
       visibility: "private",
-      coordinates: apiCoordinates,
+      coordinates: coordinates,
       tags: [],
       longitude: "",
       latitude: "",
@@ -100,6 +152,11 @@ const saveZone = async () => {
       default_customer_name: `${zoneName.value} - customer`,
       clients: [],
     };
+    
+    // Add radius if it's a circle
+    if (geometryType.value === "circle" && radius) {
+      payload.radius = radius;
+    }
 
     const response = await axios({
       method: "POST",
@@ -119,7 +176,7 @@ const saveZone = async () => {
     zoneName.value = "";
     zoneDescription.value = "";
     vectorSource.clear();
-    drawnPolygon.value = null;
+    drawnGeometry.value = null;
   } catch (err) {
     console.error("Error saving zone:", err);
     saveError.value = `Error saving zone: ${
@@ -140,6 +197,13 @@ onMounted(() => {
     <div id="map" class="map"></div>
 
     <div class="form-container">
+      <select v-model="geometryType" class="input-field">
+        <option value="polygon">Polygon</option>
+        <option value="linestring">Line String</option>
+        <option value="point">Point</option>
+        <option value="circle">Circle</option>
+      </select>
+      
       <input
         type="text"
         v-model="zoneName"

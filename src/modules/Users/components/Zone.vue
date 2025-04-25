@@ -8,6 +8,10 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon";
+import LineString from "ol/geom/LineString";
+import Point from "ol/geom/Point";
+import Circle from "ol/geom/Circle";
+import CircleStyle from "ol/style/Circle";
 import { Fill, Stroke, Style } from "ol/style";
 import axios from "axios";
 import { transform, fromLonLat } from "ol/proj";
@@ -18,10 +22,15 @@ const error = ref(null);
 const expandedZones = ref([]);
 const deletingZoneId = ref(null);
 
+const userDataJson = localStorage.getItem("userData");
+const userData = ref(JSON.parse(userDataJson));
+const token = userData.value?.authorization?.token;
+const selectedAccount = userData.value?.user?.accounts[0]?.id;
 const config = {
+  //TODO: Eman, add the correct domain (http://192.168.100.22:8091)
   domain: "https://1e873a6d-c5d6-4e2f-bdef-d15843dea8ac.mock.pstmn.io",
-  selectedAccount: "your-account-id",
-  token: "your-auth-token",
+  selectedAccount: selectedAccount,
+  token: token,
 };
 
 const fetchZones = async (map) => {
@@ -53,11 +62,8 @@ const fetchZones = async (map) => {
 
       zones.value.forEach((zone) => {
         try {
-          if (
-            !zone.coordinates ||
-            !zone.coordinates[0] ||
-            zone.coordinates[0].length < 3
-          ) {
+          console.log("Zone data:", zone);
+          if (!zone.coordinates || !zone.coordinates[0]) {
             console.warn(`Zone ${zone.id} has invalid coordinates. Skipping.`);
             return;
           }
@@ -69,20 +75,90 @@ const fetchZones = async (map) => {
             fromLonLat([coord[0], coord[1]])
           );
 
-          const polygon = new Feature({
-            geometry: new Polygon([transformedCoords]),
-            id: zone.id,
-            name: zone.name,
-          });
+          if (zone.type === "polygon") {
+            const polygon = new Feature({
+              geometry: new Polygon([transformedCoords]),
+              id: zone.id,
+              name: zone.name,
+            });
 
-          polygon.setStyle(
-            new Style({
-              fill: new Fill({ color: `rgba(${r}, ${g}, ${b}, 0.2)` }),
-              stroke: new Stroke({ color: `rgb(${r}, ${g}, ${b})`, width: 2 }),
-            })
-          );
+            polygon.setStyle(
+              new Style({
+                fill: new Fill({ color: `rgba(${r}, ${g}, ${b}, 0.2)` }),
+                stroke: new Stroke({
+                  color: `rgb(${r}, ${g}, ${b})`,
+                  width: 2,
+                }),
+              })
+            );
 
-          vectorSource.addFeature(polygon);
+            vectorSource.addFeature(polygon);
+          } else if (zone.type === "point") {
+            const point = new Feature({
+              geometry: new Point(transformedCoords[0]),
+              id: zone.id,
+              name: zone.name,
+            });
+
+            point.setStyle(
+              new Style({
+                image: new CircleStyle({
+                  radius: 5,
+                  fill: new Fill({ color: `rgba(${r}, ${g}, ${b}, 0.8)` }),
+                  stroke: new Stroke({
+                    color: `rgb(${r}, ${g}, ${b})`,
+                    width: 2,
+                  }),
+                }),
+              })
+            );
+
+            vectorSource.addFeature(point);
+          } else if (zone.type === "linestring") {
+            const line = new Feature({
+              geometry: new LineString(transformedCoords),
+              id: zone.id,
+              name: zone.name,
+            });
+            console.log("LineString zone:", transformedCoords);
+            line.setStyle(
+              new Style({
+                stroke: new Stroke({
+                  color: `rgb(${r}, ${g}, ${b})`,
+                  width: 10,
+                }),
+              })
+            );
+            vectorSource.addFeature(line);
+          } else if (zone.type === "circle") {
+            console.log("Greaaaaat");
+            const center = fromLonLat([
+              zone.coordinates[0][0],
+              zone.coordinates[0][1],
+            ]);
+            const radius = zone.radius
+            console.log("Center:", center, radius);
+
+            const circle = new Feature({
+              geometry: new Circle(center, radius),
+              id: zone.id,
+              name: zone.name,
+            });
+            circle.setStyle(
+              new Style({
+                fill: new Fill({ color: `rgba(${r}, ${g}, ${b}, 0.2)` }),
+                stroke: new Stroke({
+                  color: `rgb(${r}, ${g}, ${b})`,
+                  width: 2,
+                }),
+              })
+            );
+            vectorSource.addFeature(circle);
+          } else {
+            console.warn(`Unknown zone type ${zone.type} for zone ${zone.id}`);
+            return;
+          }
+
           hasValidFeatures = true;
         } catch (err) {
           console.error(`Error processing zone ${zone.id} for map:`, err);
@@ -236,9 +312,7 @@ onMounted(() => {
             <td>{{ zone.visibility }}</td>
             <td>
               <button @click="toggleCoordinates(zone.id)">
-                {{
-                  expandedZones.includes(zone.id) ? "Hide" : "Show"
-                }}
+                {{ expandedZones.includes(zone.id) ? "Hide" : "Show" }}
                 Coordinates
               </button>
               <div v-if="expandedZones.includes(zone.id)" class="coordinates">
