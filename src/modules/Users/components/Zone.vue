@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import { Map, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
@@ -32,6 +33,12 @@ const config = {
   selectedAccount: selectedAccount,
   token: token,
 };
+
+const router = useRouter();
+
+function goToEditZone(zoneId) {
+  router.push({ name: "EditZone", params: { id: zoneId } });
+}
 
 const fetchZones = async (map) => {
   loading.value = true;
@@ -136,7 +143,7 @@ const fetchZones = async (map) => {
               zone.coordinates[0][0],
               zone.coordinates[0][1],
             ]);
-            const radius = zone.radius
+            const radius = zone.radius;
             console.log("Center:", center, radius);
 
             const circle = new Feature({
@@ -318,6 +325,11 @@ onMounted(() => {
               <div v-if="expandedZones.includes(zone.id)" class="coordinates">
                 <pre>{{ JSON.stringify(zone.coordinates, null, 2) }}</pre>
               </div>
+            </td>
+            <td>
+              <button @click="goToEditZone(zone.id)" class="edit-button">
+                Edit
+              </button>
             </td>
             <td>
               <button

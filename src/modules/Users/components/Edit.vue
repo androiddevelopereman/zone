@@ -14,6 +14,7 @@ import Translate from "ol/interaction/Translate";
 import { Select } from "ol/interaction";
 import axios from "axios";
 import { fromLonLat, transform } from "ol/proj";
+import { useRoute } from "vue-router";
 
 const map = ref(null);
 const vectorSource = new VectorSource();
@@ -21,7 +22,8 @@ const zoneData = ref(null);
 const zoneFeature = ref(null);
 const loading = ref(true);
 const error = ref(null);
-const zoneId = ref(1);
+const route = useRoute();
+const zoneId = ref(route.params.id);
 const isSaving = ref(false); // Add saving state
 const saveError = ref(null);
 const saveSuccess = ref(false);

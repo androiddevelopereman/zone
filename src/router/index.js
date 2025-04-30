@@ -140,7 +140,7 @@ const routes = [
     meta: { title: "AddZone", requiresAuth: true },
   },
   {
-    path: "/editzone",
+    path: "/editzone/:id",
     name: "EditZone",
     component: EditZone,
     meta: { title: "EditZone", requiresAuth: true },
